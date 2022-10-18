@@ -13,10 +13,12 @@ public class EmailProperties {
     private String password;
     private String host;
     private String mailbox;
+    private String port;
     private long pollRate = 30000;
 
     public String getImapUrl(){
-        return String.format("imaps://%s:%s@%s/%s",
-                this.username, this.password, this.host, this.mailbox);
+        //imap url using ssl
+        return String.format("imaps://%s:%s@%s:%s/%s",
+                this.username, this.password, this.host, this.port, this.mailbox);
     }
 }
