@@ -18,7 +18,7 @@ public class EmailProperties {
 
     public String getImapUrl(){
         //imap url using ssl
-        return String.format("imaps://%s:%s@%s:%s/%s",
-                this.username, this.password, this.host, this.port, this.mailbox);
+        return String.format("imaps://%s:%s@%s/%s",
+                this.username, this.password, this.host, this.mailbox);
     }
 }
