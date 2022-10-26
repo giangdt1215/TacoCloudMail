@@ -15,6 +15,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * <p>Handles email content as taco orders where...</p>
+ *  <li> The order's email is the sender's email</li>
+ *  <li> The email subject line *must* be "TACO ORDER" or else it will be ignored</li>
+ *  <li> Each line of the email starts with the name of a taco design, followed by a colon,
+ *    followed by one or more ingredient names in a comma-separated list.</li>
+ *
+ * <p>The ingredient names are matched against a known set of ingredients using a LevenshteinDistance
+ * algorithm. As an example "beef" will match "GROUND BEEF" and be mapped to "GRBF"; "corn" will
+ * match "Corn Tortilla" and be mapped to "COTO".</p>
+ *
+ * <p>An example email body might look like this:</p>
+ *
+ * <code>
+ * Corn Carnitas: corn, carnitas, lettuce, tomatoes, cheddar<br/>
+ * Veggielicious: flour, tomatoes, lettuce, salsa
+ * </code>
+ *
+ * <p>This will result in an order with two tacos where the names are "Corn Carnitas" and "Veggielicious".
+ * The ingredients will be {COTO, CARN, LETC, TMTO, CHED} and {FLTO,TMTO,LETC,SLSA}.</p>
+ */
 @Component
 public class EmailToOrderTransformer extends AbstractMailMessageTransformer<EmailOrder> {
 
@@ -22,27 +43,6 @@ public class EmailToOrderTransformer extends AbstractMailMessageTransformer<Emai
 
     private static final String SUBJECT_KEYWORDS = "TACO ORDER";
 
-    /**
-     * <p>Handles email content as taco orders where...</p>
-     *  <li> The order's email is the sender's email</li>
-     *  <li> The email subject line *must* be "TACO ORDER" or else it will be ignored</li>
-     *  <li> Each line of the email starts with the name of a taco design, followed by a colon,
-     *    followed by one or more ingredient names in a comma-separated list.</li>
-     *
-     * <p>The ingredient names are matched against a known set of ingredients using a LevenshteinDistance
-     * algorithm. As an example "beef" will match "GROUND BEEF" and be mapped to "GRBF"; "corn" will
-     * match "Corn Tortilla" and be mapped to "COTO".</p>
-     *
-     * <p>An example email body might look like this:</p>
-     *
-     * <code>
-     * Corn Carnitas: corn, carnitas, lettuce, tomatoes, cheddar<br/>
-     * Veggielicious: flour, tomatoes, lettuce, salsa
-     * </code>
-     *
-     * <p>This will result in an order with two tacos where the names are "Corn Carnitas" and "Veggielicious".
-     * The ingredients will be {COTO, CARN, LETC, TMTO, CHED} and {FLTO,TMTO,LETC,SLSA}.</p>
-     */
     @Override
     protected AbstractIntegrationMessageBuilder<EmailOrder>
             doTransform(Message mailMessage) throws Exception {
